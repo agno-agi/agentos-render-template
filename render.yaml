@@ -50,6 +50,6 @@ services:
 
 databases:
   - name: agentos-db
-    plan: starter
+    plan: free
     postgresMajorVersion: "16"
     ipAllowList: []
