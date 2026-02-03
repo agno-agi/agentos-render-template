@@ -1,0 +1,55 @@
+# Render Blueprint for AgentOS
+# Documentation: https://docs.render.com/infrastructure-as-code
+
+services:
+  - type: web
+    name: agentos-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerCommand: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    plan: standard
+    region: oregon
+    healthCheckPath: /docs
+    disk:
+      name: agentos-data
+      mountPath: /data
+      sizeGB: 1
+    envVars:
+      - key: PORT
+        value: "8000"
+      - key: DATA_DIR
+        value: /data
+      - key: DB_DRIVER
+        value: postgresql+psycopg
+      - key: WAIT_FOR_DB
+        value: "True"
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: EXA_API_KEY
+        sync: false
+      - key: DB_HOST
+        fromDatabase:
+          name: agentos-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: agentos-db
+          property: port
+      - key: DB_USER
+        fromDatabase:
+          name: agentos-db
+          property: user
+      - key: DB_PASS
+        fromDatabase:
+          name: agentos-db
+          property: password
+      - key: DB_DATABASE
+        fromDatabase:
+          name: agentos-db
+          property: database
+
+databases:
+  - name: agentos-db
+    plan: starter
+    postgresMajorVersion: "16"
+    ipAllowList: []
