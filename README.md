@@ -49,22 +49,28 @@ docker compose up -d --build
 
 ### Prerequisites
 
-- [Render CLI](https://docs.render.com/cli)
+- [Render API Key](https://dashboard.render.com/u/settings#api-keys)
 - `OPENAI_API_KEY` set in your environment
+- GitHub repository with your code pushed
 
 ### Deploy
 
 ```sh
-render login
+# Set your API keys
+export RENDER_API_KEY='rnd_...'
+export OPENAI_API_KEY='sk-...'
+export EXA_API_KEY='...'  # Optional, for web research
+
+# Deploy
 ./scripts/render_up.sh
 ```
 
-The script validates the blueprint, provisions PostgreSQL, and deploys your application.
+The script uses the Render API to:
+1. Create a PostgreSQL database
+2. Create a web service connected to your GitHub repo
+3. Configure all environment variables automatically
 
-After deployment:
-1. Go to [Render Dashboard](https://dashboard.render.com)
-2. Navigate to your service → Environment
-3. Set `OPENAI_API_KEY` (and optionally `EXA_API_KEY`)
+**Note:** Free-tier services cannot be created via API. The script uses paid plans (basic DB + starter service).
 
 ### Connect to control plane
 
